@@ -55,3 +55,4 @@ next-env.d.ts
 /outputs/
 /work/
 *.tsbuildinfo
+.dev.vars*
