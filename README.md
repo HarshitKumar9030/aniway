@@ -7,9 +7,9 @@
 [![Top language](https://img.shields.io/github/languages/top/HarshitKumar9030/aniway)](https://github.com/HarshitKumar9030/aniway)
 [![Last commit](https://img.shields.io/github/last-commit/HarshitKumar9030/aniway)](https://github.com/HarshitKumar9030/aniway/commits/main)
 
-![aniway dashboard design concept](design-concept.png)
+![aniway overview showing the seasonal discovery banner and weekly episode schedule](public/aniway-app.png)
 
-*Dashboard design concept. The shipped interface is implemented in the app; anime schedule times and streaming availability come from external services and can vary by region.*
+*Screenshot of the running aniway app. Anime schedule times and streaming availability can vary by region.*
 
 ## What it does
 
@@ -83,6 +83,7 @@ If you discover a security issue, do not open a public issue containing exploit 
 ## More details
 
 - [`extensions/crunchyroll-cookie`](extensions/crunchyroll-cookie/README.md) — install and use the Chrome/Edge cookie helper.
+- [`design-concept.png`](design-concept.png) — original dashboard concept.
 - [`public/anime-landscape.png`](public/anime-landscape.png) — the landscape artwork used by the interface.
 - [`tests/`](tests/) — cookie handling, API transport, worker behavior, and seasonal watchlist tests.
 
