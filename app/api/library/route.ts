@@ -1,6 +1,6 @@
 import {getCurrentUser} from '../../../lib/auth';
 import {getDb} from '../../../db';
-import {follows,preferences,notices} from '../../../db/schema';
+import {follows,preferences,notices,crunchyConnections} from '../../../db/schema';
 import {and,eq,desc} from 'drizzle-orm';
 import {z} from 'zod';
 import {sameOrigin} from '../../../lib/request-security';
@@ -13,8 +13,8 @@ const payload=z.discriminatedUnion('action',[
  z.object({action:z.literal('read')})
 ]);
 export async function GET(){const user=await getCurrentUser();if(!user)return Response.json({error:'Sign in to sync your watchlist.'},{status:401});
- const db=getDb();const [saved,prefs,inbox]=await Promise.all([db.select().from(follows).where(eq(follows.userId,user.userId)),db.select().from(preferences).where(eq(preferences.userId,user.userId)),db.select().from(notices).where(eq(notices.userId,user.userId)).orderBy(desc(notices.createdAt)).limit(100)]);
- return Response.json({follows:saved.map(x=>({media:JSON.parse(x.media),watched:x.watched})),preferences:prefs[0]||null,notices:inbox});}
+ const db=getDb();const [saved,prefs,inbox,connections]=await Promise.all([db.select().from(follows).where(eq(follows.userId,user.userId)),db.select().from(preferences).where(eq(preferences.userId,user.userId)),db.select().from(notices).where(eq(notices.userId,user.userId)).orderBy(desc(notices.createdAt)).limit(100),db.select({cache:crunchyConnections.cache}).from(crunchyConnections).where(eq(crunchyConnections.userId,user.userId)).limit(1)]);
+ return Response.json({follows:saved.map(x=>({media:JSON.parse(x.media),watched:x.watched})),preferences:prefs[0]||null,notices:inbox,crunchyroll:{connected:connections.length>0,watchlist:connections[0]?.cache?JSON.parse(connections[0].cache).watchlist||[]:[],history:connections[0]?.cache?JSON.parse(connections[0].cache).history||[]:[]}},{headers:{'Cache-Control':'no-store'}});}
 export async function POST(request:Request){const user=await getCurrentUser();if(!user)return Response.json({error:'Sign in to save changes.'},{status:401});if(!sameOrigin(request))return Response.json({error:'Invalid request origin.'},{status:403});try{
  const input=payload.parse(await request.json());const db=getDb();
  if(input.action==='follow'){if(!Number.isInteger(input.media?.id)||JSON.stringify(input.media).length>30000)return Response.json({error:'Invalid anime'},{status:400});await db.insert(follows).values({userId:user.userId,mediaId:input.media!.id,media:JSON.stringify(input.media)}).onConflictDoNothing();}

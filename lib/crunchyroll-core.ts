@@ -1,11 +1,19 @@
 import type {AuthSession,CrunchyItem} from 'crunchy-api';
 import {createCipheriv,createDecipheriv,randomBytes} from 'node:crypto';
 import type {Anime} from './anime';
+export type StoredSession=AuthSession&{cookieExpiresAt?:number|null};
 export type ProviderRow={id:string;title:string;seriesTitle:string;seasonTitle:string;episode:number|null;season:number|null;completed:boolean;progress:number|null;url:string};
 export type CrunchyCache={watchlist:ProviderRow[];history:ProviderRow[];partial:boolean;matched:number;updated:number};
-export function encryptSession(session:AuthSession,keyHex:string){const iv=randomBytes(12);const cipher=createCipheriv('aes-256-gcm',Buffer.from(keyHex,'hex'),iv);const body=Buffer.concat([cipher.update(JSON.stringify(session),'utf8'),cipher.final()]);return ['v1',iv.toString('hex'),cipher.getAuthTag().toString('hex'),body.toString('hex')].join(':');}
-export function decryptSession(value:string,keyHex:string):AuthSession{const [version,iv,tag,body]=value.split(':');if(version!=='v1'||!iv||!tag||!body)throw new Error('Invalid encrypted session');const cipher=createDecipheriv('aes-256-gcm',Buffer.from(keyHex,'hex'),Buffer.from(iv,'hex'));cipher.setAuthTag(Buffer.from(tag,'hex'));return JSON.parse(Buffer.concat([cipher.update(Buffer.from(body,'hex')),cipher.final()]).toString('utf8'));}
-export function normalizeCookie(value:string){const raw=value.trim();if(/[\r\n]/.test(raw))throw new Error('Enter a valid etp_rt session cookie.');const match=raw.match(/(?:^|;\s*)etp_rt=([^;\r\n]+)/);const token=match?match[1].trim():raw;if(token.length<10||token.length>3500||!/^[A-Za-z0-9._~%+/=-]+$/.test(token))throw new Error('Enter a valid etp_rt session cookie.');return 'etp_rt='+token;}
+export function encryptSession(session:StoredSession,keyHex:string){const iv=randomBytes(12);const cipher=createCipheriv('aes-256-gcm',Buffer.from(keyHex,'hex'),iv);const body=Buffer.concat([cipher.update(JSON.stringify(session),'utf8'),cipher.final()]);return ['v1',iv.toString('hex'),cipher.getAuthTag().toString('hex'),body.toString('hex')].join(':');}
+export function decryptSession(value:string,keyHex:string):StoredSession{const [version,iv,tag,body]=value.split(':');if(version!=='v1'||!iv||!tag||!body)throw new Error('Invalid encrypted session');const cipher=createDecipheriv('aes-256-gcm',Buffer.from(keyHex,'hex'),Buffer.from(iv,'hex'));cipher.setAuthTag(Buffer.from(tag,'hex'));return JSON.parse(Buffer.concat([cipher.update(Buffer.from(body,'hex')),cipher.final()]).toString('utf8'));}
+export function normalizeCookie(value:string){
+ const raw=value.trim().replace(/^cookie:\s*/i,'');
+ if(/[\r\n]/.test(raw))throw new Error('Enter a valid etp_rt session cookie.');
+ const match=raw.match(/(?:^|;\s*)etp_rt\s*=\s*([^;\r\n]+)/);
+ const token=(match?match[1].trim():raw).replace(/^("|')(.*)\1$/,'$2');
+ if(token.length<10||token.length>3500||!/^[A-Za-z0-9._~%+/-]+={0,2}$/.test(token))throw new Error('Enter a valid etp_rt session cookie.');
+ return 'etp_rt='+token;
+}
 const record=(v:unknown):Record<string,any>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
 export function providerRow(entry:CrunchyItem):ProviderRow{
  const panel=record(entry.panel);const meta=record(panel.episode_metadata||entry.episode_metadata);const seriesMeta=record(panel.series_metadata);const id=String(panel.id||entry.id||'');

@@ -56,6 +56,3 @@ next-env.d.ts
 /work/
 *.tsbuildinfo
 .dev.vars*
-
-# Temporary Mac session handoff; copy separately, then delete after setup.
-/MAC-SESSION-HANDOFF.tmp.md

@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "aniway · Crunchyroll connection",
+  "version": "1.0.0",
+  "description": "Copy your Crunchyroll session on demand and receive local cookie expiry reminders.",
+  "permissions": ["cookies", "storage", "alarms", "notifications", "clipboardWrite"],
+  "host_permissions": ["https://www.crunchyroll.com/*", "https://beta-api.crunchyroll.com/*"],
+  "background": {"service_worker": "background.js", "type": "module"},
+  "action": {"default_popup": "popup.html", "default_title": "aniway connection"},
+  "icons": {"128": "icon.png"}
+}
