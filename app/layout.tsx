@@ -2,9 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "aniway",
+  metadataBase: new URL("https://aniway.harshit.page"),
+  title: "Anime Schedule & Watchlist | Aniway",
   description:
-    "Browse seasonal anime, follow Japanese broadcast times in your timezone, and bring your aniway and Crunchyroll watchlists together.",
+    "Plan your anime week with seasonal picks, Japanese broadcast times in your timezone, a personal watchlist, and optional Crunchyroll sync.",
+  alternates: {
+    canonical: "/",
+  },
   applicationName: "aniway - Anime schedule & watchlist",
   keywords: [
     "anime schedule",
@@ -16,9 +20,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "aniway",
-    title: "Anime schedule & watchlist | aniway",
+    title: "Anime Schedule & Watchlist | Aniway",
     description:
-      "Browse seasonal anime, follow Japanese broadcast times in your timezone, and bring your aniway and Crunchyroll watchlists together.",
+      "Plan your anime week with seasonal picks, Japanese broadcast times in your timezone, a personal watchlist, and optional Crunchyroll sync.",
     images: [
       {
         url: "/anime-landscape.png",
@@ -28,9 +32,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anime schedule & watchlist | aniway",
+    title: "Anime Schedule & Watchlist | Aniway",
     description:
-      "Browse seasonal anime, follow Japanese broadcast times in your timezone, and bring your aniway and Crunchyroll watchlists together.",
+      "Plan your anime week with seasonal picks, Japanese broadcast times in your timezone, a personal watchlist, and optional Crunchyroll sync.",
     images: ["/anime-landscape.png"],
   },
   robots: { index: true, follow: true },
@@ -40,6 +44,15 @@ export const metadata: Metadata = {
   },
 };
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Aniway",
+  alternateName: "aniway",
+  url: "https://aniway.harshit.page/",
+  description: metadata.description,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,7 +60,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
