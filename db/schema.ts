@@ -1,0 +1,5 @@
+import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
+export const follows = sqliteTable('follows', {userId: text('user_id').notNull(), mediaId: integer('media_id').notNull(),media: text('media').notNull(), watched: integer('watched').notNull().default(0)}, t => [primaryKey({ columns: [t.userId, t.mediaId] })]);
+export const preferences = sqliteTable('preferences', {userId: text('user_id').primaryKey(), timezone: text('timezone').notNull().default('Asia/Kolkata'),releases: integer('releases', {mode:'boolean'}).notNull().default(true),changes: integer('changes', {mode:'boolean'}).notNull().default(true)});
+export const notices = sqliteTable('notices', {id: text('id').primaryKey(), userId: text('user_id').notNull(),title: text('title').notNull(), body: text('body').notNull(),createdAt: integer('created_at').notNull(), read: integer('read', {mode:'boolean'}).notNull().default(false)},t=>[index('notices_user_created').on(t.userId,t.createdAt)]);
+export const snapshots = sqliteTable('snapshots', {id: text('id').primaryKey(), airingAt: integer('airing_at').notNull()});

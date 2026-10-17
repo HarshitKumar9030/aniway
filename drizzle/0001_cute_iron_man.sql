@@ -1,0 +1,1 @@
+CREATE INDEX `notices_user_created` ON `notices` (`user_id`,`created_at`);
