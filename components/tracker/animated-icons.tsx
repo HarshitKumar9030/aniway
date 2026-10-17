@@ -1,5 +1,9 @@
 'use client';
 import {motion,useReducedMotion} from 'framer-motion';
+export function AniwayMark({className=''}:{className?:string}){
+ const reduced=useReducedMotion();
+ return <motion.svg className={className} width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true" whileHover={reduced?undefined:{rotate:45}} transition={{type:'spring',stiffness:160,damping:16}}>{Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return <motion.path key={i} d={`M ${20+5*Math.cos(a)} ${20+5*Math.sin(a)} L ${20+16*Math.cos(a)} ${20+16*Math.sin(a)}`} stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" initial={{pathLength:reduced?1:0,opacity:reduced?1:0}} animate={{pathLength:1,opacity:1}} transition={{duration:reduced?0:.5,delay:reduced?0:i*.04,ease:'easeOut'}}/>;})}</motion.svg>;
+}
 export function AnimatedReel({className=''}:{className?:string}){
  const reduced=useReducedMotion();
  return <motion.svg className={className} width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true" whileHover={reduced?undefined:{rotate:-8,scale:1.05}} transition={{type:'spring',stiffness:160,damping:16}}><motion.path d="M34 20a14 14 0 1 1-14-14c6 0 11 3 13 8" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" initial={{pathLength:reduced?1:0}} animate={{pathLength:1}} transition={{duration:reduced?0:.8,ease:'easeOut'}}/><motion.path d="m17 13 11 7-11 7V13Z" fill="currentColor" initial={{opacity:0,scale:reduced?1:.7}} animate={{opacity:1,scale:1}} transition={{duration:reduced?0:.3,delay:reduced?0:.2}}/></motion.svg>;
