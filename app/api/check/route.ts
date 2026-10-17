@@ -1,10 +1,10 @@
-import {getChatGPTUser} from '../../chatgpt-auth';
+import {getCurrentUser} from '../../../lib/auth';
 import {getDb} from '../../../db';
 import {follows,preferences,notices,snapshots} from '../../../db/schema';
 import {eq,and,desc} from 'drizzle-orm';
 import {anilist,fields,title,type Anime,type Notice} from '../../../lib/anime';
 export async function GET(){
- const user=await getChatGPTUser();if(!user)return Response.json({error:'Sign in required'},{status:401});
+ const user=await getCurrentUser();if(!user)return Response.json({error:'Sign in required'},{status:401});
  try {
  const db=getDb();const saved=await db.select().from(follows).where(eq(follows.userId,user.userId));
  const prefs=(await db.select().from(preferences).where(eq(preferences.userId,user.userId)))[0];
@@ -32,4 +32,5 @@ export async function GET(){
  return Response.json({notices:inbox,newNotices},{headers:{'Cache-Control':'no-store'}});
  }catch{return Response.json({error:'Could not check updates. We will try again shortly.'},{status:502});}
 }
+
 
