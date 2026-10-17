@@ -3724,6 +3724,11 @@ footer a {
     color: var(--ink)
 }
 
+.extension-download-panel>div {
+    flex: 1 1 320px;
+    min-width: 0
+}
+
 .extension-download-panel p,
 .extension-download-panel small {
     display: block;
@@ -3740,7 +3745,11 @@ footer a {
 
 .extension-download-panel .primary {
     flex-shrink: 0;
-    text-decoration: none
+    max-width: 100%;
+    box-sizing: border-box;
+    gap: 12px;
+    text-decoration: none;
+    white-space: normal
 }
 
 .extension-download-panel .primary span {
@@ -3748,7 +3757,7 @@ footer a {
     font-size: 10px
 }
 
-@media(max-width:600px) {
+@media(max-width:900px) {
     .connections-page .provider-panel {
         gap: 18px
     }
@@ -3763,6 +3772,16 @@ footer a {
         align-items: flex-start;
         flex-direction: column;
         padding: 18px
+    }
+
+    .extension-download-panel>div {
+        flex: none
+    }
+
+    .extension-download-panel .primary {
+        align-self: stretch;
+        justify-content: center;
+        min-height: 44px
     }
 }
 
