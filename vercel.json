@@ -3,5 +3,11 @@
   "framework": null,
   "installCommand": "npm ci",
   "buildCommand": "npm run build:vercel",
-  "outputDirectory": ".vercel/output"
+  "outputDirectory": ".vercel/output",
+  "crons": [
+    {
+      "path": "/api/status",
+      "schedule": "0 5 * * *"
+    }
+  ]
 }

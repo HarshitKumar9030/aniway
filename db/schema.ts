@@ -7,3 +7,6 @@ export const accounts=sqliteTable('accounts',{id:text('id').primaryKey(),email:t
 export const sessions=sqliteTable('sessions',{tokenHash:text('token_hash').primaryKey(),accountId:text('account_id').notNull().references(()=>accounts.id,{onDelete:'cascade'}),expiresAt:integer('expires_at').notNull()},t=>[index('sessions_account').on(t.accountId),index('sessions_expiry').on(t.expiresAt)]);
 export const authAttempts=sqliteTable('auth_attempts',{key:text('key').primaryKey(),count:integer('count').notNull().default(1),expiresAt:integer('expires_at').notNull()});
 export const crunchyConnections=sqliteTable('crunchy_connections',{userId:text('user_id').primaryKey(),encryptedSession:text('encrypted_session').notNull(),connectedAt:integer('connected_at').notNull(),lastSyncedAt:integer('last_synced_at'),lastError:text('last_error'),cache:text('cache')});
+// Only aggregate public counters and credential-free health snapshots are stored.
+export const siteDailyViews=sqliteTable('site_daily_views',{day:text('day').notNull(),path:text('path').notNull(),views:integer('views').notNull().default(0)},t=>[primaryKey({columns:[t.day,t.path]})]);
+export const siteHealthChecks=sqliteTable('site_health_checks',{bucket:integer('bucket').primaryKey(),checkedAt:integer('checked_at').notNull(),result:text('result').notNull()});

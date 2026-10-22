@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { PageView } from "../components/public/page-view";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aniway.harshit.page"),
@@ -67,6 +68,7 @@ export default function RootLayout({
             __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c"),
           }}
         />
+        <PageView />
         {children}
       </body>
     </html>

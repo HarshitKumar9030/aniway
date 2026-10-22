@@ -80,6 +80,15 @@ Crunchyroll session data is encrypted with AES-256-GCM before persistence. Only 
 
 If you discover a security issue, do not open a public issue containing exploit details or user data. Contact the repository owner privately.
 
+## Public statistics and status
+
+- [Statistics](https://aniway.harshit.page/statistics): aggregate browser-reported page views for 30 days, account totals, saved watchlist entries, and marked-watched episodes. View collection starts when this feature deploys; past visits are not reconstructed. No visitor IDs, analytics cookies, IP addresses, or referrers are saved by this feature. Do Not Track and Global Privacy Control disable view collection.
+- [Status](https://aniway.harshit.page/status): database queries, real AniList catalog and broadcast queries, and credential-free Crunchyroll authentication API reachability. History is retained for 30 days. Crunchyroll reachability does not establish that a user's account can authenticate or sync.
+
+Both are public without sign-in. `GET /api/statistics` and `GET /api/status` expose aggregate data only. The browser reports allowlisted page views through the same-origin `POST /api/statistics` endpoint. The two telemetry tables are initialized additively on first use and are included in the Drizzle schema.
+
+Health checks are cached for five minutes in the database and run on demand. Vercel also requests `/api/status` once daily at 05:00 UTC through the cron configured in `vercel.json`. Percentages describe successful recorded checks, not continuous uptime; periods without checks are shown as no data. The status page shares the application's hosting, so a full hosting outage needs an independent monitor to detect it while it is happening.
+
 ## More details
 
 - [`extensions/crunchyroll-cookie`](extensions/crunchyroll-cookie/README.md) — install and use the Chrome/Edge cookie helper.
