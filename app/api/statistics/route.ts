@@ -3,7 +3,7 @@ import { sameOrigin } from '../../../lib/request-security';
 
 export async function GET() {
   try {
-    return Response.json(await getStatistics(), { headers: { 'Cache-Control': 'public, max-age=60' } });
+    return Response.json(await getStatistics(), { headers: { 'Cache-Control': 'no-store' } });
   } catch {
     return Response.json({ error: 'Statistics are temporarily unavailable.' }, { status: 503 });
   }
