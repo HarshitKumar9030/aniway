@@ -87,7 +87,7 @@ If you discover a security issue, do not open a public issue containing exploit 
 
 Both are public without sign-in. `GET /api/statistics` and `GET /api/status` expose aggregate data only. The browser reports allowlisted page views through the same-origin `POST /api/statistics` endpoint. The two telemetry tables are initialized additively on first use and are included in the Drizzle schema.
 
-Health checks are cached for five minutes in the database and run on demand. Vercel also requests `/api/status` once daily at 05:00 UTC through the cron configured in `vercel.json`. Percentages describe successful recorded checks, not continuous uptime; periods without checks are shown as no data. The status page shares the application's hosting, so a full hosting outage needs an independent monitor to detect it while it is happening.
+Health checks are cached for five minutes in the database and run on demand. The public repository’s `API health monitor` GitHub Actions workflow requests a snapshot every five minutes without credentials or checkout. Scheduling can be delayed by GitHub, and public-repository schedules can be disabled after 60 days without repository activity. Independent check failures remain visible in GitHub Actions if the app itself cannot load. Vercel also requests `/api/status` once daily at 05:00 UTC through the cron configured in `vercel.json`. Percentages describe successful recorded checks, not continuous uptime; periods without checks are shown as no data. The status page shares the application's hosting, so a full hosting outage needs an independent monitor to detect it while it is happening.
 
 ## More details
 

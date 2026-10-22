@@ -1,0 +1,28 @@
+name: API health monitor
+on:
+  schedule:
+    - cron: '2-57/5 * * * *'
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: api-health-monitor
+  cancel-in-progress: false
+jobs:
+  health:
+    if: github.repository == 'HarshitKumar9030/aniway'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check API and persist a health snapshot
+        shell: bash
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 30 --retry 1 --retry-delay 5 \
+            https://aniway.harshit.page/api/status --output /tmp/health.json
+          node <<'JS'
+          const fs = require('node:fs');
+          const status = JSON.parse(fs.readFileSync('/tmp/health.json', 'utf8'));
+          if (!Array.isArray(status.checks) || !status.checks.length) throw new Error('Invalid status response');
+          for (const check of status.checks) console.log(`${check.name}: ${check.state} (${check.latencyMs}ms)`);
+          if (!status.historyAvailable) console.warn('Health history could not be saved.');
+          if (status.state === 'outage') process.exitCode = 1;
+          JS
